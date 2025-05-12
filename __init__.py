@@ -17,23 +17,29 @@ javascript_folder = os.path.join(os.path.dirname(os.path.realpath(__file__)), "j
 
 if not os.path.exists(extentions_folder):
     print('Making the "web\extensions\FizzleDorf" folder')
-    os.makedirs(extentions_folder)
+    try:
+        os.makedirs(extentions_folder, exist_ok=True)
+    except:
+        pass
 
-result = filecmp.dircmp(javascript_folder, extentions_folder)
+try:
+    result = filecmp.dircmp(javascript_folder, extentions_folder)
 
-if result.left_only or result.diff_files:
-    print('Update to javascripts files detected')
-    file_list = list(result.left_only)
-    file_list.extend(x for x in result.diff_files if x not in file_list)
+    if result.left_only or result.diff_files:
+        print('Update to javascripts files detected')
+        file_list = list(result.left_only)
+        file_list.extend(x for x in result.diff_files if x not in file_list)
 
-    for file in file_list:
-        print(f'Copying {file} to extensions folder')
-        src_file = os.path.join(javascript_folder, file)
-        dst_file = os.path.join(extentions_folder, file)
-        if os.path.exists(dst_file):
-            os.remove(dst_file)
-        #print("disabled")
-        shutil.copy(src_file, dst_file)
+        for file in file_list:
+            print(f'Copying {file} to extensions folder')
+            src_file = os.path.join(javascript_folder, file)
+            dst_file = os.path.join(extentions_folder, file)
+            if os.path.exists(dst_file):
+                os.remove(dst_file)
+            #print("disabled")
+            shutil.copy(src_file, dst_file)
+except:
+    pass
 
 
 def is_installed(package, package_overwrite=None):
